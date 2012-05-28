@@ -2,7 +2,7 @@ local tinker = require'tinker'
 local socket = require'socket'
 
 local ipcon = tinker.ipcon()
-local lcd = ipcon:lcd20x4('8eV')
+local lcd = ipcon:lcd20x4('8vE')
 
 lcd:backlight_on()
 lcd:write_line(0,0,'hello')
