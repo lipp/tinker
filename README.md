@@ -4,6 +4,9 @@ A Lua binding for [bricks and bricklets by Tinkerforge
 GmbH](http://www.tinkerforge.com/). Allows working standalone (with
 built-in event loop) or with lua-ev.
 
+(Lua) tinker integrates the native C API by Tinkerforge with some
+minor changes to allow external event handling (see directory capi).
+
 # Build
 
 ```shell 
