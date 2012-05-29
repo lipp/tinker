@@ -396,7 +396,7 @@ int ipcon_answer_sem_wait_timeout(Device *device) {
 #endif
 }
 
-int ipcon_create(IPConnection *ipcon, const char *host, const int port) {
+ int ipcon_create(IPConnection *ipcon, const char *host, const int port, const int dont_start_threads) {
 	int i;
 	for(i = 0; i < MAX_NUM_DEVICES; i++) {
 		ipcon->devices[i] = NULL;
@@ -449,7 +449,7 @@ int ipcon_create(IPConnection *ipcon, const char *host, const int port) {
 	}
 #endif
 
-	if(0) {
+	if(dont_start_threads != 0) {
 #ifdef _WIN32
 	InitializeCriticalSection(&ipcon->callback_queue_mutex);
 	ipcon->callback_queue_semaphore = CreateSemaphore(NULL, 0, INT32_MAX, NULL);
