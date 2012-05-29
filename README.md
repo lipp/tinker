@@ -47,9 +47,23 @@ and factory for all bricks/bricklets you want to use.
 
 ## ipcon (object)
 
-### ipcon:lcd20x4()
+### ipcon:join_thread()
 
-Creates a lcd20x4 bricklet object.
+Waits for the (internal) IO and message dispatch loops to finish.
+
+### ipcon:getfd()
+
+Returns the internal socket fd (filedescriptor) which can be used to
+run an external event loop (e.g. lua-ev).
+
+### ipcon:dispatch()
+
+Reads all available data on the socket and dispatches them
+(e.g. calling registered callbacks) in the current thread context.
+
+### ipcon:lcd20x4(uid)
+
+Creates a lcd20x4 bricklet object for the device with uid.
 
 ## lcd20x4 (object)
 
@@ -68,4 +82,15 @@ Enables the backlight.
 ### lcd20x4:backlight_off()
 
 Disables the backlight.
+
+### bool lcd20x4:is_backlight_on()
+
+Determines whether the backlight is on.
+
+### lcd20x4:button_pressed(function(button_index) end)
+
+Registers a callback, which will be called whenever a button is
+pressed. The callback gets the button_index passed in.
+
+
 
