@@ -11,10 +11,10 @@ struct tinker_ipcon {
 static int tinker_ipcon(lua_State *L) {
   const char* host = luaL_optstring(L, 1, "localhost");;
   int port = luaL_optint(L, 2, 4223);
-  int dont_start_threads = luaL_optint(L, 3, 0);
+  int start_threads = luaL_optint(L, 3, 1);
   IPConnection *ipcon = lua_newuserdata(L, sizeof(IPConnection));
 
-  if(ipcon_create(ipcon, host, port, dont_start_threads) < 0) {
+  if(ipcon_create(ipcon, host, port, start_threads) < 0) {
     luaL_error(L, "ipcon_create failed");
   }
 

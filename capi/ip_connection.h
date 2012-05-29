@@ -177,7 +177,7 @@ typedef struct {
 #endif
 #undef ATTRIBUTE_PACKED
 
-int ipcon_create(IPConnection *ipcon, const char *host, const int port, const int dont_start_threads);
+int ipcon_create(IPConnection *ipcon, const char *host, const int port, const int start_threads);
 int ipcon_getfd(IPConnection *ipcon);
 void ipcon_dispatch(IPConnection *ipcon);
 void ipcon_enumerate(IPConnection *ipcon, enumerate_callback_func_t cb);
