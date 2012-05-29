@@ -178,6 +178,8 @@ typedef struct {
 #undef ATTRIBUTE_PACKED
 
 int ipcon_create(IPConnection *ipcon, const char *host, const int port);
+int ipcon_getfd(IPConnection *ipcon);
+void ipcon_dispatch(IPConnection *ipcon);
 void ipcon_enumerate(IPConnection *ipcon, enumerate_callback_func_t cb);
 int ipcon_add_device(IPConnection *ipcon, Device *device);
 void ipcon_join_thread(IPConnection *ipcon);

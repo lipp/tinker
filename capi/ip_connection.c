@@ -26,6 +26,41 @@
 const char BASE58_STR[] = \
 	"123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ";
 
+
+int ipcon_get_fd(IPConnection *ipcon) {
+	return ipcon->fd;
+}
+
+void ipcon_dispatch(IPConnection *ipcon) {
+	unsigned char buffer[RECV_BUFFER_SIZE] = { 0 };
+	int length = read(ipcon->fd, buffer, RECV_BUFFER_SIZE);
+	if(length < 0) {
+		unsigned char* buf = buffer;
+		int handled = 0;
+		do {
+			uint8_t function_id = ipcon_get_function_id_from_data(buf);
+			uint16_t part_length = ipcon_get_length_from_data(buf);
+			handled += part_length;
+			if (function_id == FUNCTION_ENUMERATE_CALLBACK) {
+				EnumerateReturn *er = (EnumerateReturn *)buf;
+				char str_uid[MAX_BASE58_STR_SIZE];
+				ipcon_base58encode(er->device_uid, str_uid);				
+				if (ipcon->enumerate_callback != NULL) {
+					ipcon->enumerate_callback(str_uid,
+								  er->device_name,
+								  er->device_stack_id,
+								  er->is_new);
+				}
+			} else {
+				uint8_t stack_id = ipcon_get_stack_id_from_data(buf);
+				Device *device = ipcon->devices[stack_id];				
+				device->device_callbacks[function_id](device, buf);				
+			}
+			buf += part_length;			
+		} while(handled < length);
+	}
+}
+
 #ifdef _WIN32
 void ipcon_recv_loop(void *param) {
 #else
@@ -414,6 +449,7 @@ int ipcon_create(IPConnection *ipcon, const char *host, const int port) {
 	}
 #endif
 
+	if(0) {
 #ifdef _WIN32
 	InitializeCriticalSection(&ipcon->callback_queue_mutex);
 	ipcon->callback_queue_semaphore = CreateSemaphore(NULL, 0, INT32_MAX, NULL);
@@ -469,6 +505,7 @@ int ipcon_create(IPConnection *ipcon, const char *host, const int port) {
 		return E_NO_THREAD;
 	}
 #endif
+    }
 	return E_OK;
 }
 

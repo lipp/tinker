@@ -35,6 +35,18 @@ static int tinker_ipcon_join_thread(lua_State* L) {
   return 0;
 }
 
+static int tinker_ipcon_dispatch(lua_State* L) {
+  IPConnection *ipcon = luaL_checkudata(L, 1, TINKER_IPCON_META);
+  ipcon_dispatch(ipcon);
+  return 0;
+}
+
+static int tinker_ipcon_getfd(lua_State* L) {
+  IPConnection *ipcon = luaL_checkudata(L, 1, TINKER_IPCON_META);
+  lua_pushnumber(L, ipcon_get_fd(ipcon));
+  return 1;
+}
+
 static int tinker_ipcon_lcd20x4(lua_State* L) {
   IPConnection *ipcon = luaL_checkudata(L, 1, TINKER_IPCON_META);
   const char* uid = luaL_checkstring(L, 2);
@@ -66,5 +78,7 @@ static const struct luaL_Reg tinker_ipcon_methods [] = {
   {"__gc",tinker_ipcon_destroy},
   {"lcd20x4",tinker_ipcon_lcd20x4},
   {"join_thread",tinker_ipcon_join_thread},
+  {"getfd",tinker_ipcon_getfd},
+  {"dispatch",tinker_ipcon_dispatch},
   {NULL,NULL}
 };
