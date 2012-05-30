@@ -7,6 +7,7 @@
 #include <stdio.h>
 
 #include "tinker_lcd20x4.c"
+#include "tinker_servo.c"
 #include "tinker_ipcon.c"
 
 

@@ -74,10 +74,36 @@ static int tinker_ipcon_lcd20x4(lua_State* L) {
   return 1;
 }
 
+static int tinker_ipcon_servo(lua_State* L) {
+  IPConnection *ipcon = luaL_checkudata(L, 1, TINKER_IPCON_META);
+  const char* uid = luaL_checkstring(L, 2);  
+  int index = 0;
+  while(servo_array[index] && index < sizeof(servo_array)) {
+    ++index;
+  }
+  if(servo_array[index]) {
+    luaL_error(L, "no free servo slot");
+  }
+  struct tinker_servo *tservo = lua_newuserdata(L, sizeof(struct tinker_servo));
+  servo_array[index] = tservo;
+  tservo->index = index;
+  tservo->L = L;
+  servo_create(&tservo->servo, uid);
+  tservo->under_voltage_callback_ref = LUA_REFNIL;
+  luaL_getmetatable(L, TINKER_SERVO_META);
+  lua_setmetatable(L, -2);
+  
+  if(ipcon_add_device(ipcon, &tservo->servo) < 0) {
+    luaL_error(L, "ipcon_add_device failed");
+  }
+  return 1;
+}
+
 static const struct luaL_Reg tinker_ipcon_methods [] = {
   {"destroy",tinker_ipcon_destroy},
   {"__gc",tinker_ipcon_destroy},
   {"lcd20x4",tinker_ipcon_lcd20x4},
+  {"servo",tinker_ipcon_servo},
   {"join_thread",tinker_ipcon_join_thread},
   {"getfd",tinker_ipcon_getfd},
   {"dispatch",tinker_ipcon_dispatch},
