@@ -3,12 +3,15 @@ local pack = require'pack'
 local pairs = pairs
 local ipairs = ipairs
 local assert = assert
+local error = error
 local print = print
+local string = string
 
 module('tinker')
 
 local brickd_call_sock
 local brickd_event_sock
+local devs
 
 init = 
    function(ip,port)
@@ -16,6 +19,7 @@ init =
       port = port or 4223
       brickd_call_sock = socket.connect(ip,port)
       brickd_event_sock = socket.connect(ip,port)
+      devs = enumerate()
    end
 
 -- stackid,funcid,length
@@ -43,7 +47,11 @@ local call =
    function(stackid,method,...)
       local arguments
       if method.ins then
-         arguments = method.ins:pack(...)
+         if method.format_ins then
+            arguments = method.ins:pack(method.format_ins(...))
+         else
+            arguments = method.ins:pack(...)
+         end
       end
       send_request(brickd_call_sock,stackid,method.funcid,arguments)
       if method.outs then
@@ -120,14 +128,40 @@ local methods = {
       backlight_off = {
          funcid = 4
       },
+      write_line = {
+         funcid = 1,
+         ins = 'bbA',
+         format_ins = 
+            function(pos,line,text)
+               if pos+#text > 20 then
+                  error('text does not fit on display')
+               end
+               text = text..string.rep(string.char(0),20-#text)
+               return pos,line,text
+            end
+      },
+      clear_display = {
+         funcid = 2
+      }
    },
 }
 
 local device_ctor = 
    function(name)
       return function(stackid)
+                if not devs[stackid] then
+                   devs = enumerate()
+                end
+                if not devs[stackid] then
+                   error('invalid stackid '..stackid)
+                end
                 local dev = {
                    stackid = stackid,
+                   uuid = devs[stackid].uuid,
+                   enable_events = 
+                      function(self)
+                         enable_events(self.uuid)
+                      end
                 }
                 add_methods(dev,methods.lcd20x4)
                 return dev
