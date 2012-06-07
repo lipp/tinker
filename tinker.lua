@@ -3,11 +3,9 @@ local pack = require'pack'
 local pairs = pairs
 local ipairs = ipairs
 local assert = assert
-local setmetatable = setmetatable
-local rawget = rawget
 local print = print
 
-module('tank')
+module('tinker')
 
 local brickd_call_sock
 local brickd_event_sock
@@ -41,7 +39,7 @@ local recv_response =
       end
    end
 
-call = 
+local call = 
    function(stackid,method,...)
       local arguments
       if method.ins then
@@ -102,20 +100,46 @@ local method_meta = {
                 end
       end
 }
-      
-lcd20x4 = 
-   function(stackid)
-      local s = {
-         stackid = stackid,
-         methods = {
-            backlight_on = {
-               funcid = 3
-            },
-            backlight_off = {
-               funcid = 4
-            },
-         }
-      }
-      return setmetatable(s,method_meta)
+
+local add_methods = 
+   function(dev,methods)
+      for name,method in pairs(methods) do
+         dev[name] = 
+            function(self,...)
+               return call(self.stackid,method,...)
+            end
+      end
    end
+
+
+local methods = {
+   lcd20x4 = {
+      backlight_on = {
+         funcid = 3
+      },
+      backlight_off = {
+         funcid = 4
+      },
+   },
+}
+
+local device_ctor = 
+   function(name)
+      return function(stackid)
+                local dev = {
+                   stackid = stackid,
+                }
+                add_methods(dev,methods.lcd20x4)
+                return dev
+             end
+   end
+
+lcd20x4 = device_ctor('lcd20x4')
+
+return {
+   init = init,
+   enumerate = enumerate,
+   lcd20x4 = lcd20x4
+} 
+
 
