@@ -6,6 +6,7 @@ local assert = assert
 local error = error
 local print = print
 local string = string
+local select = select
 
 module('tinker')
 
@@ -55,8 +56,12 @@ local call =
       end
       send_request(brickd_call_sock,stackid,method.funcid,arguments)
       if method.outs then
-         local resp = recv_response(brickd_call_sock,stackid,funcid)
-         return select(2,resp:unpack(method.outs))
+         local resp = recv_response(brickd_call_sock,stackid,method.funcid)
+         if method.format_outs then
+            return method.format_outs(select(2,resp:unpack(method.outs)))
+         else
+            return select(2,resp:unpack(method.outs))
+         end
       end
    end
 
@@ -142,6 +147,14 @@ local methods = {
       },
       clear_display = {
          funcid = 2
+      },
+      is_backlight_on = {
+         funcid = 5,
+         outs = 'b',
+         format_outs =
+            function(is_on)
+               return is_on > 0 
+            end
       }
    },
 }
