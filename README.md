@@ -26,9 +26,9 @@ NOTE: requires brickd running!
 -- load module
 local tinker = require'tinker'
 -- init the module, which connects to default brickd (localhost,port 4223).
-tinker.init()
+local ipcon = tinker.ipcon()
 -- create the brick instance by specifying the stackid
-local lcd = tinker.lcd20x4(2)
+local lcd = ipcon:lcd20x4(2)
 -- call some methods on the lcd object
 lcd:backlight_on()
 lcd:write_line(0,0,'Lua greetz all bricks')
@@ -42,16 +42,16 @@ tinkerforge. There are some differences though.
 
 ## tinker (module)
 
-### tinker.init(address,port)
+### tinker.ipcon(address,port)
 
-Creates two socket connections to the brickd (one for calls, one for events/callbacks).
+## ipcon (object)
 
-### tinker.dispatch_events()
+### ipcon:dispatch_events()
 
 Reads all available data on the event socket and dispatches them
 (e.g. calling registered callbacks) in the current thread context.
 
-### tinker.lcd20x4(stackid)
+### ipcon:lcd20x4(stackid)
 
 Creates a lcd20x4 bricklet object for the device with the specified stackid.
 
@@ -77,7 +77,7 @@ Disables the backlight.
 
 Determines whether the backlight is on.
 
-### lcd20x4.button_pressed = function(button_index) end
+### lcd20x4:button_pressed(function(button_index) end)
 
 Registers a callback, which will be called whenever a button is
 pressed. The callback gets the button_index passed in.
