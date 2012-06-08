@@ -87,17 +87,17 @@ enumerate =
       return devs
    end
 
-local enable_events = 
+local get_stack_id = 
    function(uuid)
       assert(#uuid==8)
-      local get_stack_id = {
-         funcid = 0xff,
-         ins = 'A',
-         outs = 'A8bbbA40b'
-      }
-      local stackid = 0x00
-      local ruuid = call(brickd_event_sock,stackid,method,uuid)
-      assert(ruuid==uuid)
+      local ins = 'A'
+      local outs = 'A8bbbA40b'
+      send_request(brickd_event_sock,0x00,0xff,ins:pack(uuid))
+      local stackid,funcid,data = recv_response(brickd_event_sock)
+      assert(stackid==0x00,funcid==0xff)
+      local _,ruuid,f1,f2,f3,name,rstackid = data:unpack(outs)
+   --   print(data:unpack(outs))
+   --   assert(stackid==rstackid)
    end
 
 local add_methods = 
@@ -123,9 +123,9 @@ local callbacks = {
    }
 }
 
-local events_devs = {}
+local event_devs = {}
 
-local dispatch_events = 
+dispatch_events = 
    function()
       local stackid,funcid,data = recv_response(brickd_event_sock)
       local dev = event_devs[stackid] 
@@ -136,12 +136,12 @@ local dispatch_events =
       if not callback then
          return
       end
-      local dev_func = devs[callback.name]
+      local dev_func = dev[callback.name]
       if dev_func then
          if callback.format_ins then
-            dev_func(callback.format_ins(data:unpack(callback.ins)))
+            dev_func(callback.format_ins(select(2,data:unpack(callback.ins))))
          else
-            dev_func(data:unpack(callback.ins))
+            dev_func(select(2,data:unpack(callback.ins)))
          end
       end
    end
@@ -197,7 +197,7 @@ local device_ctor =
                    enable_events = 
                       function(self)
                          event_devs[self.stackid] = self
-                         enable_events(self.uuid)
+                         get_stack_id(self.uuid)
                       end
                 }
                 add_methods(dev,methods.lcd20x4)
@@ -208,14 +208,22 @@ local device_ctor =
 loop = 
    function()
       while true do
-         dispatch_event()
+         dispatch_events()
       end
+   end
+
+event_socket = 
+   function()
+      return brickd_event_sock
    end
 
 lcd20x4 = device_ctor('lcd20x4')
 
 return {
    init = init,
+   loop = loop,
+   event_socket = event_socket,
+   dispatch_events = dispatch_events,
    enumerate = enumerate,
    lcd20x4 = lcd20x4
 } 
