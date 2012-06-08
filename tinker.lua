@@ -35,12 +35,11 @@ local send_request =
    end
 
 local recv_response = 
-   function(sock,stackid,funcid)
+   function(sock)
       local resp = sock:receive(4)
       if resp then
          local _,rstackid,rfuncid,rlen = resp:unpack(packet_header)
-         assert(rstackid == stackid and rfuncid == funcid)
-         return sock:receive(rlen-4)
+         return rstackid,rfuncid,sock:receive(rlen-4)
       end
    end
 
@@ -56,7 +55,8 @@ local call =
       end
       send_request(brickd_call_sock,stackid,method.funcid,arguments)
       if method.outs then
-         local resp = recv_response(brickd_call_sock,stackid,method.funcid)
+         local rstackid,rfuncid,resp = recv_response(brickd_call_sock)
+         assert(stackid==rstackid,funcid==rfuncid)
          if method.format_outs then
             return method.format_outs(select(2,resp:unpack(method.outs)))
          else
@@ -72,10 +72,11 @@ enumerate =
       local enum_format = 'A8A40bb'
       local devs = {}
       while true do
-         local resp = recv_response(brickd_call_sock,0,0xfd)
-         if not resp then
+         local stackid,funcid,resp = recv_response(brickd_call_sock)
+         if not stackid then
             break
          end
+         assert(stackid==0,funcid==0xfd,#resp==50)
          local _,uuid,name,stackid,is_new = resp:unpack(enum_format)
          devs[stackid] = {
             name = name,
@@ -99,21 +100,6 @@ local enable_events =
       assert(ruuid==uuid)
    end
 
-local method_meta = {
-   __index = 
-      function(self,name)
-         local methods = rawget(self,'methods')
-         assert(methods)
-         local stackid = rawget(self,'stackid')
-         assert(stackid)
-         local method = methods[name]
-         print(name,method)
-         return function(...)
-                   return call(stackid,method,...)
-                end
-      end
-}
-
 local add_methods = 
    function(dev,methods)
       for name,method in pairs(methods) do
@@ -121,6 +107,42 @@ local add_methods =
             function(self,...)
                return call(self.stackid,method,...)
             end
+      end
+   end
+
+local callbacks = {
+   lcd20x4 = {
+      [9] = {
+         name = 'button_pressed',
+         ins = 'b'
+      },
+      [10] = {
+         name = 'button_pressed',
+         ins = 'b'
+      }
+   }
+}
+
+local events_devs = {}
+
+local dispatch_events = 
+   function()
+      local stackid,funcid,data = recv_response(brickd_event_sock)
+      local dev = event_devs[stackid] 
+      if not dev then
+         return
+      end
+      local callback = callbacks[dev.type][funcid]
+      if not callback then
+         return
+      end
+      local dev_func = devs[callback.name]
+      if dev_func then
+         if callback.format_ins then
+            dev_func(callback.format_ins(data:unpack(callback.ins)))
+         else
+            dev_func(data:unpack(callback.ins))
+         end
       end
    end
 
@@ -171,14 +193,23 @@ local device_ctor =
                 local dev = {
                    stackid = stackid,
                    uuid = devs[stackid].uuid,
+                   type = name,
                    enable_events = 
                       function(self)
+                         event_devs[self.stackid] = self
                          enable_events(self.uuid)
                       end
                 }
                 add_methods(dev,methods.lcd20x4)
                 return dev
              end
+   end
+
+loop = 
+   function()
+      while true do
+         dispatch_event()
+      end
    end
 
 lcd20x4 = device_ctor('lcd20x4')
