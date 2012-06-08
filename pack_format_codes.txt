@@ -1,0 +1,20 @@
+#copied from lpack.c
+#define	OP_ZSTRING	'z'		/* zero-terminated string */
+#define	OP_BSTRING	'p'		/* string preceded by length byte */
+#define	OP_WSTRING	'P'		/* string preceded by length word */
+#define	OP_SSTRING	'a'		/* string preceded by length size_t */
+#define	OP_STRING	'A'		/* string */
+#define	OP_FLOAT	'f'		/* float */
+#define	OP_DOUBLE	'd'		/* double */
+#define	OP_NUMBER	'n'		/* Lua number */
+#define	OP_CHAR		'c'		/* char */
+#define	OP_BYTE		'b'		/* byte = unsigned char */
+#define	OP_SHORT	'h'		/* short */
+#define	OP_USHORT	'H'		/* unsigned short */
+#define	OP_INT		'i'		/* int */
+#define	OP_UINT		'I'		/* unsigned int */
+#define	OP_LONG		'l'		/* long */
+#define	OP_ULONG	'L'		/* unsigned long */
+#define	OP_LITTLEENDIAN	'<'		/* little endian */
+#define	OP_BIGENDIAN	'>'		/* big endian */
+#define	OP_NATIVE	'='		/* native endian */

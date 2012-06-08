@@ -17,7 +17,8 @@ build = {
    type = "none",
    install = {
       lua = {
-         ['tinker'] = 'tinker.lua'
+         ['tinker'] = 'tinker.lua',
+         ['tinker.lcd20x4'] = 'tinker/lcd20x4.lua'
       }
    }
 }

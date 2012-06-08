@@ -4,9 +4,9 @@ local tinker = require'tinker'
 local socket = require'socket'
 
 -- connect to brickd
-tinker.init()
+local ipcon = tinker.ipcon()
 -- create (and add) lcd20x4 instance, change uid approp.
-local lcd = tinker.lcd20x4(2)
+local lcd = ipcon:lcd20x4(2)
 
 -- do some funny lcd control
 lcd:backlight_on()
