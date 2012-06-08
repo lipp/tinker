@@ -1,7 +1,7 @@
 local tinker = require'tinker'
 
-tinker.init()
-local devs = tinker.enumerate()
+local ipcon = tinker.ipcon()
+local devs = ipcon:enumerate()
 
 for stackid,dev in pairs(devs) do
    print('stackid: '..stackid, 'name :'..dev.name)

@@ -114,11 +114,11 @@ local ipcon =
       local add_callbacks = 
          function(dev,callbacks)
             dev.callbacks = {}
-            for funcid,callback in pairs(callbacks) do
-               dev[callback.name] = 
+            for name,callback in pairs(callbacks) do
+               dev[name] = 
                   function(self,f)
-                     self.callbacks[funcid] = callback
-                     self.callbacks[funcid].f = f
+                     self.callbacks[callback.funcid] = callback
+                     self.callbacks[callback.funcid].f = f
                   end
             end
          end
@@ -184,7 +184,8 @@ local ipcon =
          event_socket = event_socket,
          dispatch_events = dispatch_events,
          enumerate = enumerate,
-         lcd20x4 = device_ctor('lcd20x4')
+         lcd20x4 = device_ctor('lcd20x4'),
+         imu = device_ctor('imu')
       }
    end
 

@@ -22,6 +22,22 @@ return {
       clear_display = {
          funcid = 2
       },
+      set_config = {
+         funcid = 6,
+         ins = 'bb',
+         format_ins = 
+            function(cursor,blinking)
+               return cursor and 1 or 0,blinking and 1 or 0
+            end
+      },
+      get_config = {
+         funcid = 7,
+         outs = 'bb',
+         format_outs = 
+            function(cursor,blinking)
+               return cursor > 0, blinking > 0
+            end
+      },
       is_backlight_on = {
          funcid = 5,
          outs = 'b',
@@ -32,12 +48,12 @@ return {
       }
    },
    callbacks = {
-      [9] = {
-         name = 'button_pressed',
+      button_pressed = {
+         funcid = 9,
          ins = 'b'
       },
-      [10] = {
-         name = 'button_released',
+      button_released = {
+         funcid = 10,
          ins = 'b'
       }
    }
