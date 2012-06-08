@@ -10,22 +10,15 @@ description = {
 }
 dependencies = {
    "lua >= 5.1",
-}
-external_dependencies = {
+   "luasocket",
+   "lpack"
 }
 build = {
-   type = "builtin",
-   modules = {
-      tinker = {
-	 incdirs = {
-	    "capi"
-	 },
-	 sources = {
-	    "capi/ip_connection.c",
-            "capi/bricklet_lcd_20x4.c", 
-            "src/tinker.c"
-	 },		
-	 libraries = {"pthread"},
-      },
-   },
+   type = "none",
+   install = {
+      lua = {
+         ['tinker'] = 'tinker.lua'
+      }
+   }
 }
+
