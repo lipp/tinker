@@ -185,7 +185,8 @@ local ipcon =
          dispatch_events = dispatch_events,
          enumerate = enumerate,
          lcd20x4 = device_ctor('lcd20x4'),
-         imu = device_ctor('imu')
+         imu = device_ctor('imu'),
+         master = device_ctor('master')
       }
    end
 
