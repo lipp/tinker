@@ -197,7 +197,8 @@ local ipcon =
          analog_in = device_ctor('analog_in'),
          analog_out = device_ctor('analog_out'),
          current_12 = device_ctor('current_12'),
-         current_25 = device_ctor('current_25')
+         current_25 = device_ctor('current_25'),
+         distance_ir = device_ctor('distance_ir')
       }
    end
 
