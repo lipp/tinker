@@ -187,7 +187,8 @@ local ipcon =
          lcd20x4 = device_ctor('lcd20x4'),
          imu = device_ctor('imu'),
          master = device_ctor('master'),
-         dc = device_ctor('dc')
+         dc = device_ctor('dc'),
+         stepper = device_ctor('stepper')
       }
    end
 
