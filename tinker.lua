@@ -188,7 +188,8 @@ local ipcon =
          imu = device_ctor('imu'),
          master = device_ctor('master'),
          dc = device_ctor('dc'),
-         stepper = device_ctor('stepper')
+         stepper = device_ctor('stepper'),
+         ambient_light = device_ctor('ambient_light')
       }
    end
 
