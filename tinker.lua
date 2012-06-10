@@ -190,7 +190,8 @@ local ipcon =
          dc = device_ctor('dc'),
          stepper = device_ctor('stepper'),
          ambient_light = device_ctor('ambient_light'),
-         analog_in = device_ctor('analog_in')
+         analog_in = device_ctor('analog_in'),
+         analog_out = device_ctor('analog_out')
       }
    end
 
