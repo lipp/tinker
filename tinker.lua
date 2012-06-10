@@ -134,10 +134,14 @@ local ipcon =
             end
             local callback = dev.callbacks[funcid]
             if callback then
-               if callback.format_ins then
-                  callback.f(callback.format_ins(select(2,data:unpack(callback.ins))))
+               if callback.ins then
+                  if callback.format_ins then
+                     callback.f(callback.format_ins(select(2,data:unpack(callback.ins))))
+                  else
+                     callback.f(select(2,data:unpack(callback.ins)))
+                  end
                else
-                  callback.f(select(2,data:unpack(callback.ins)))
+                  callback.f()
                end
             end
          end
@@ -191,7 +195,9 @@ local ipcon =
          stepper = device_ctor('stepper'),
          ambient_light = device_ctor('ambient_light'),
          analog_in = device_ctor('analog_in'),
-         analog_out = device_ctor('analog_out')
+         analog_out = device_ctor('analog_out'),
+         current_12 = device_ctor('current_12'),
+         current_25 = device_ctor('current_25')
       }
    end
 
