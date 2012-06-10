@@ -186,7 +186,8 @@ local ipcon =
          enumerate = enumerate,
          lcd20x4 = device_ctor('lcd20x4'),
          imu = device_ctor('imu'),
-         master = device_ctor('master')
+         master = device_ctor('master'),
+         dc = device_ctor('dc')
       }
    end
 
