@@ -1,6 +1,6 @@
 return {
    methods = {
-      get_illuminance = {
+      get_voltage = {
          funcid = 1,
          outs = 'H'
       },
@@ -8,11 +8,11 @@ return {
          funcid = 2,
          outs = 'H'
       },
-      set_illuminance_callback_period = {
+      set_voltage_callback_period = {
          funcid = 3,
          ins = 'I'
       },
-      get_illuminance_callback_period = {
+      get_voltage_callback_period = {
          funcid = 4,
          outs = 'I'
       },
@@ -24,7 +24,7 @@ return {
          funcid = 6,
          outs = 'I'
       },
-      set_illuminance_callback_threshold = {
+      set_voltage_callback_threshold = {
          funcid = 7,
          ins = 'Ahh',
          format_ins = 
@@ -35,7 +35,7 @@ return {
                return option,min,max
             end
       },
-      get_illuminance_callback_threshold = {
+      get_voltage_callback_threshold = {
          funcid = 8,
          outs = 'A1hh'
       },
@@ -64,12 +64,20 @@ return {
       }
    },
    callbacks = {
-      illuminance = {
+      voltage = {
          funcid = 13,
-         ins = 'H'
+         ins = 'h'
       },
       analog_value = {
          funcid = 14,
+         ins = 'H'
+      },
+      voltage_reached = {
+         funcid = 15,
+         ins = 'h'
+      },
+      analog_value_reached = {
+         funcid = 16,
          ins = 'H'
       }
    }
