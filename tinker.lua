@@ -200,7 +200,8 @@ local ipcon =
          current_25 = device_ctor('current_25'),
          distance_ir = device_ctor('distance_ir'),
          dual_relay = device_ctor('dual_relay'),
-         humidity = device_ctor('humidity')
+         humidity = device_ctor('humidity'),
+         io_16 = device_ctor('io_16')
       }
    end
 
