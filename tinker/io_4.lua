@@ -1,25 +1,23 @@
 return {
    methods = {
-      set_port = {
+      set_value = {
          funcid = 1,
-         ins = 'cb'
+         ins = 'b'
       },
       get_port = {
          funcid = 2,
-         ins = 'c',
          outs = 'b'
       },
-      set_port_configuration = {
+      set_configuration = {
          funcid = 3,
-         ins = 'cbcb',
+         ins = 'bcb',
          format_ins = 
-            function(port,mask,direction,value)
-               return port,mask,direction,(value and 1 or 0)
+            function(mask,direction,value)
+               return mask,direction,(value and 1 or 0)
             end
       },
-      get_port_configuration = {
+      get_configuration = {
          funcid = 4,
-         ins = 'c',
          outs = 'bb'
       },
       set_debounce_period = {
@@ -30,20 +28,19 @@ return {
          funcid = 6,
          outs = 'I'
       },
-      set_port_interrupt = {
+      set_interrupt = {
          funcid = 7,
-         ins = 'cb'
+         ins = 'b'
       },
-      get_port_interrupt = {
+      get_interrupt = {
          funcid = 8,
-         ins = 'c',
          outs = 'b'
       }
    },
    callbacks = {
       interrupt = {
          funcid = 9,
-         ins = 'cbb'
+         ins = 'bb'
       }
    }
 }
