@@ -198,7 +198,8 @@ local ipcon =
          analog_out = device_ctor('analog_out'),
          current_12 = device_ctor('current_12'),
          current_25 = device_ctor('current_25'),
-         distance_ir = device_ctor('distance_ir')
+         distance_ir = device_ctor('distance_ir'),
+         dual_relay = device_ctor('dual_relay')
       }
    end
 
