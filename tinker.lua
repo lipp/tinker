@@ -188,7 +188,6 @@ local ipcon =
          event_socket = event_socket,
          dispatch_events = dispatch_events,
          enumerate = enumerate,
-         lcd20x4 = device_ctor('lcd20x4'),
          imu = device_ctor('imu'),
          master = device_ctor('master'),
          dc = device_ctor('dc'),
@@ -203,7 +202,9 @@ local ipcon =
          humidity = device_ctor('humidity'),
          io_16 = device_ctor('io_16'),
          io_4 = device_ctor('io_4'),
-         joystick = device_ctor('joystick')
+         joystick = device_ctor('joystick'),
+         lcd_20x4 = device_ctor('lcd20x4'),
+         lcd_16x2 = device_ctor('lcd16x2')
       }
    end
 

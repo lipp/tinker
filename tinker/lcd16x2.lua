@@ -12,7 +12,7 @@ return {
          ins = 'bbA',
          format_ins = 
             function(pos,line,text)
-               if pos+#text > 20 then
+               if pos+#text > 16 then
                   error('text does not fit on display')
                end
                text = text..string.rep(string.char(0),20-#text)
