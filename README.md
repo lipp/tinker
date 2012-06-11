@@ -95,11 +95,11 @@ Enables the backlight.
 
 Disables the backlight.
 
-### bool lcd20x4:is_backlight_on()
+### bool lcd_20x4:is_backlight_on()
 
 Determines whether the backlight is on.
 
-### lcd20x4:button_pressed(function(button_index) end)
+### lcd_20x4:button_pressed(function(button_index) end)
 
 Registers a callback, which will be called whenever a button is
 pressed. The callback gets the button_index passed in.
