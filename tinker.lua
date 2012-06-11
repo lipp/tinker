@@ -209,7 +209,8 @@ local ipcon =
          piezzo_buzzer = device_ctor('piezo_buzzer'),
          rotary_poti = device_ctor('rotary_poti'),
          temperature = device_ctor('temperature'),
-         temperature_ir = device_ctor('temperature_ir')
+         temperature_ir = device_ctor('temperature_ir'),
+         voltage = device_ctor('voltage')
       }
    end
 
