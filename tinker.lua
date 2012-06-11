@@ -205,7 +205,8 @@ local ipcon =
          joystick = device_ctor('joystick'),
          lcd_20x4 = device_ctor('lcd_20x4'),
          lcd_16x2 = device_ctor('lcd_16x2'),
-         linear_poti = device_ctor('linear_poti')
+         linear_poti = device_ctor('linear_poti'),
+         piezzo_buzzer = device_ctor('piezo_buzzer')
       }
    end
 
