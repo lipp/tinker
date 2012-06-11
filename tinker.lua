@@ -203,8 +203,8 @@ local ipcon =
          io_16 = device_ctor('io_16'),
          io_4 = device_ctor('io_4'),
          joystick = device_ctor('joystick'),
-         lcd_20x4 = device_ctor('lcd20x4'),
-         lcd_16x2 = device_ctor('lcd16x2')
+         lcd_20x4 = device_ctor('lcd_20x4'),
+         lcd_16x2 = device_ctor('lcd_16x2')
       }
    end
 
