@@ -4,7 +4,8 @@ A Lua module for [bricks and bricklets by Tinkerforge
 GmbH](http://www.tinkerforge.com/). Allows working standalone (with
 built-in event loop) or with lua-ev.
 
-(Lua) tinker employs luasocket and lua-pack to use the TCP/IP API  by Tinkerforge.
+(Lua) tinker employs luasocket and lua-pack to use the TCP/IP API  by
+Tinkerforge. It does not rely on pthread and does not spawn threads.
 
 # Install
 
@@ -54,7 +55,17 @@ Reads all available data on the event socket and dispatches them
 
 ### ipcon:event_socket()
 
-Returns the (luasocket) socket instance.
+Returns the (luasocket) socket instance. Can be used to retrieve the
+fd and do async io, e.g. with lua-ev:
+
+```lua
+local sock = ipcon:event_socket()
+local fd = sock:getfd()
+local io = ev.IO.new(
+      function()
+         ipcon:dispatch_events()
+      end,fd,ev.READ)
+```
 
 ### ipcon:loop()
 
@@ -63,7 +74,8 @@ Reads and dispatches incoming messages (e.g. triggering callbacks).
 ### ipcon:enumerate(timeout)
 
 Enumerates all available devices and returns them as a table with the
-stackid as key with sub tables which contain uuid, name and is_new.
+stackid as key with sub tables which contain uuid, name and
+is_new. The timeout is optional and default to 0.3 secs.
 
 ```lua
 local ipcon = tinker.ipcon()
@@ -146,6 +158,8 @@ local lcd = ipcon:lcd_20x4(6) -- assume stackid 6
 lcd:button_pressed(function(button_index) 
    print('button', button_index, 'pressed')
 end)
+-- block forever and wait for button press events
+ipcon:loop()
 ```
 
 # Status
