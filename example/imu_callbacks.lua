@@ -13,5 +13,4 @@ imu:orientation(
       lcd:write_line(1,0,'pitch:'..pitch)
       lcd:write_line(2,0,'yaw:'..yaw)
    end)
-imu:enable_events()
 ipcon:loop()
