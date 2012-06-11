@@ -97,7 +97,6 @@ local ipcon =
             local stackid,funcid,data = recv_response(brickd_event_sock)
             assert(stackid==0x00,funcid==0xff)
             local _,ruuid,f1,f2,f3,name,rstackid = data:unpack(outs)
-            --   print(data:unpack(outs))
             --   assert(stackid==rstackid)
          end
       
@@ -111,26 +110,29 @@ local ipcon =
             end
          end
 
+      local event_devs = {}
+
       local add_callbacks = 
          function(dev,callbacks)
             dev.callbacks = {}
             for name,callback in pairs(callbacks) do
                dev[name] = 
                   function(self,f)
+                     if not event_devs[self.stackid] then
+                        self:enable_events()
+                     end
                      self.callbacks[callback.funcid] = callback
                      self.callbacks[callback.funcid].f = f
                   end
             end
          end
 
-      local event_devs = {}
-
       local dispatch_events = 
          function()
             local stackid,funcid,data = recv_response(brickd_event_sock)
             local dev = event_devs[stackid] 
             if not dev then
-         return
+               return
             end
             local callback = dev.callbacks[funcid]
             if callback then

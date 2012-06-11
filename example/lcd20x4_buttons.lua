@@ -14,6 +14,5 @@ lcd:button_released(
       lcd:write_line(index,0,'button '..index..' released')
    end)
 
-lcd:enable_events()
 ipcon:loop()
 lcd:backlight_off()

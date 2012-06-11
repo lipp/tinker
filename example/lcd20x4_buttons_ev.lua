@@ -14,7 +14,6 @@ lcd:button_released(
       lcd:clear_display()
       lcd:write_line(index,0,'button '..index..' released')
    end)
-lcd:enable_events()
 
 local sock = ipcon:event_socket()
 
