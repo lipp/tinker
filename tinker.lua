@@ -206,7 +206,8 @@ local ipcon =
          lcd_20x4 = device_ctor('lcd_20x4'),
          lcd_16x2 = device_ctor('lcd_16x2'),
          linear_poti = device_ctor('linear_poti'),
-         piezzo_buzzer = device_ctor('piezo_buzzer')
+         piezzo_buzzer = device_ctor('piezo_buzzer'),
+         rotary_poti = device_ctor('rotary_poti')
       }
    end
 
