@@ -202,7 +202,8 @@ local ipcon =
          dual_relay = device_ctor('dual_relay'),
          humidity = device_ctor('humidity'),
          io_16 = device_ctor('io_16'),
-         io_4 = device_ctor('io_4')
+         io_4 = device_ctor('io_4'),
+         joystick = device_ctor('joystick')
       }
    end
 
