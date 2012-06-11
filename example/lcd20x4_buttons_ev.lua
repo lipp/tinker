@@ -2,7 +2,7 @@ local tinker = require'tinker'
 local ev = require'ev'
 
 local ipcon = tinker.ipcon()
-local lcd = ipcon:lcd20x4(2)
+local lcd = ipcon:lcd_20x4(2)
 lcd:backlight_on()
 lcd:button_pressed( 
    function(index)
