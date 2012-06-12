@@ -4,15 +4,20 @@ A Lua module for [bricks and bricklets by Tinkerforge
 GmbH](http://www.tinkerforge.com/). Allows working standalone (with
 built-in event loop) or with lua-ev.
 
-(Lua) tinker employs luasocket and lua-pack to use the TCP/IP API  by
-Tinkerforge. It does not rely on pthread and does not spawn threads.
+This module employs luasocket for socket communication and lua-pack
+for serialization. It uses the TCP/IP API provided by Tinkerforge and
+does not bind to the C API. Thus it does not rely on pthread and does not spawn threads.
 
 # Install
+
+## Via cloning
 
 ```shell 
 git clone git://github.com/lipp/tinker.git
 luarocks make rockspecs/tinker-scm-1.rockspec 
 ```
+
+## Directly using luarocks
 
 With LuaRocks > 2.0.4.1:
 
@@ -42,9 +47,9 @@ NOTE: requires brickd running!
 ```lua
 -- load module
 local tinker = require'tinker'
--- init the module, which connects to default brickd (localhost,port 4223).
+-- create an ip connection to the brickd (default ip:localhost,port:4223).
 local ipcon = tinker.ipcon()
--- create the brick instance by specifying the stackid
+-- create an lcd instance by specifying the stackid
 local lcd = ipcon:lcd_20x4(2)
 -- call some methods on the lcd object
 lcd:backlight_on()
@@ -54,8 +59,8 @@ lcd:backlight_off()
 
 # API
 
-The API tries to be very close to the C API provided by
-tinkerforge. There are some differences though. 
+The API tries to be very close to the APIs provided by
+Tinkerforge. There are some differences though. 
 
 ## tinker (module)
 
@@ -69,6 +74,8 @@ An ipcon object instance is required to "create" bricks or bricklets.
 
 Reads all available data on the event socket and dispatches them
 (e.g. calling registered callbacks) in the current thread context.
+This method is only required, if not using ipcon:loop() for event dispatching.
+See [full example](https://github.com/lipp/tinker/blob/master/example/lcd20x4_buttons_ev.lua).
 
 ### ipcon:event_socket()
 
@@ -83,10 +90,15 @@ local io = ev.IO.new(
          ipcon:dispatch_events()
       end,fd,ev.READ)
 ```
+See [full example](https://github.com/lipp/tinker/blob/master/example/lcd20x4_buttons_ev.lua).
 
 ### ipcon:loop()
 
-Reads and dispatches incoming messages (e.g. triggering callbacks).
+Reads and dispatches incoming messages (e.g. triggering
+callbacks). This is a very basic event loop, which only allows to
+handle brick/bricklet events. If you need to process other events/IO,
+use some more sophisticated event loop mechanism, like lua-ev or
+employ a threading environment.
 
 ### ipcon:enumerate(timeout)
 
@@ -107,6 +119,9 @@ NOTE: The uuid is NOT base 58 encoded as you see in the brickv!
 Creates a lcd20x4 bricklet object for the device with the specified stackid.
 
 ## lcd_20x4 (object)
+
+This is an example how to use the brick/bricklet object, and how
+methods and callbacks are mapped.
 
 ### lcd_20x4:write_line(x,y,text)
 
@@ -162,11 +177,11 @@ local x,y,z = imu:get_acceleration() -- called exactly as in TCP/IP docu
 
 ### Callbacks
 
-The callbacks are called like the TCP/IP documentation of
-brick/bricklet says without CALLBACK_ prefix and all lowercase
-(CALLBACK_VOLTAGE -> voltage). The
-callback name field accesses a method, which allows to register a Lua
-function. It gets all callback data passed in as arguments (if available).
+The callbacks can be registered by calling a method named like the
+callback event (as stated in the TCP/IP documentation of the
+brick/bricklet, but without CALLBACK_ prefix and all lowercase, e.g.:
+CALLBACK_VOLTAGE -> voltage) and passing in the Lua function to be called. 
+The Lua function gets all callback data passed in as arguments (if available).
 
 ```lua
 local ipcon = tinker.ipcon()
@@ -182,6 +197,6 @@ ipcon:loop()
 # Status
 
 ALL bricks and bricklet are "implemented", not all tested
-though. Feedback is very welcome!
+though (need more bricks!). Feedback is very welcome!
 
 
