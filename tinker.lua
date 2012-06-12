@@ -63,13 +63,15 @@ local ipcon =
                end
             end
          end
+
+      local devs = {}
       
       local enumerate =
          function(_,timeout)
             brickd_call_sock:settimeout(timeout or 0.3)
             send_request(brickd_call_sock,0,0xfe)
             local enum_format = 'A8A40bb'
-            local devs = {}
+            devs = {}
             while true do
                local stackid,funcid,resp = recv_response(brickd_call_sock)
                if not stackid then
@@ -82,11 +84,9 @@ local ipcon =
                   uuid = uuid,
                   is_new = is_new
                }
-            end
+            end            
             return devs
          end
-
-      local devs = enumerate()
 
       local get_stack_id = 
          function(uuid)
