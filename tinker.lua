@@ -40,7 +40,7 @@ local ipcon =
       ip = ip or 'localhost'
       port = port or 4223
       local brickd_call_sock = socket.connect(ip,port)
-      local brickd_event_sock = socket.connect(ip,port)
+      local brickd_event_sock
       
       local call = 
          function(stackid,method,...)
@@ -91,13 +91,15 @@ local ipcon =
       local get_stack_id = 
          function(uuid)
             assert(#uuid==8)
+            if not brickd_event_sock then
+               brickd_event_sock = socket.connect(ip,port)
+            end
             local ins = 'A'
             local outs = 'A8bbbA40b'
             send_request(brickd_event_sock,0x00,0xff,ins:pack(uuid))
-            local stackid,funcid,data = recv_response(brickd_event_sock)
-            assert(stackid==0x00,funcid==0xff)
-            local _,ruuid,f1,f2,f3,name,rstackid = data:unpack(outs)
-            --   assert(stackid==rstackid)
+            -- Ignore response! the response carries no relevant information
+            -- for this function anyway.
+            -- Response will be skipped by next dispatch_events call.
          end
       
       local add_methods = 
