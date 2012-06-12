@@ -14,6 +14,23 @@ git clone git://github.com/lipp/tinker.git
 luarocks make rockspecs/tinker-scm-1.rockspec 
 ```
 
+With LuaRocks > 2.0.4.1:
+
+```shell
+$ sudo luarocks install https://raw.github.com/lipp/tinker/master/rockspecs/tinker-scm-1.rockspec
+```
+
+Note: luarocks require lua-sec for doing https requests.
+Install with apt
+
+```shell
+$ sudo apt-get install liblua5.1-sec1
+```
+or LuaRocks
+```shell
+$ sudo luarocks install luasec
+````
+
 # Usage
 
 See example directory.
