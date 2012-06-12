@@ -152,27 +152,29 @@ local ipcon =
 
       local device_ctor = 
          function(name)
-            return function(_,stackid)
-                      if not devs[stackid] then
-                         devs = enumerate()
-                      end
-                      if not devs[stackid] then
-                         error('invalid stackid '..stackid)
-                      end
-                      local dev = {
-                         stackid = stackid,
-                         uuid = devs[stackid].uuid,
-                         type = name,
-                         enable_events = 
-                            function(self)
-                               event_devs[self.stackid] = self
-                               get_stack_id(self.uuid)
-                            end
-                      }
-                      add_methods(dev,require('tinker.'..name).methods)
-                      add_callbacks(dev,require('tinker.'..name).callbacks)
-                      return dev
-                   end
+            local ctor = 
+               function(_,stackid)
+                  if not devs[stackid] then
+                     devs = enumerate()
+                  end
+                  if not devs[stackid] then
+                     error('invalid stackid '..stackid)
+                  end
+                  local dev = {
+                     stackid = stackid,
+                     uuid = devs[stackid].uuid,
+                     type = name,
+                     enable_events = 
+                        function(self)
+                           event_devs[self.stackid] = self
+                           get_stack_id(self.uuid)
+                        end
+                  }
+                  add_methods(dev,require('tinker.'..name).methods)
+                  add_callbacks(dev,require('tinker.'..name).callbacks)
+                  return dev
+               end
+            return ctor
          end
       
       local loop = 
