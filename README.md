@@ -13,8 +13,8 @@ does not bind to the C API. Thus it does not rely on pthread and does not spawn 
 ## Via cloning
 
 ```shell 
-git clone git://github.com/lipp/tinker.git
-luarocks make rockspecs/tinker-scm-1.rockspec 
+$ git clone git://github.com/lipp/tinker.git
+$ luarocks make rockspecs/tinker-scm-1.rockspec 
 ```
 
 ## Directly using luarocks
@@ -181,13 +181,15 @@ pressed. The callback gets the button_index passed in.
 The ipcon is required to construct a new brick or bricklet instance.
 It provides a method called as the brick/bricklet and takes the
 stackid (NOT the uuid!) as argument: e.g.
-```
+
+```lua
 local ipcon = tinker.ipcon()
 local imu = ipcon:imu(4) -- assume stackid 4
 local cur = ipcon:current_12(3) -- assume stackid 3
 local temp = ipcon:temperature_ir(5) -- assume stackid 5
 -- etc.
 ```
+
 The create methods are always ALL lowercase and may have underscores.
 
 ### Methods
