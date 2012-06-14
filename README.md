@@ -128,7 +128,8 @@ gets passed in the device description. The return value is a function,
 which can be called to trigger enumeration. 
 The example mimics the behavior of the 'sync' variant of ipcon:enumerate().
 
-```
+```lua
+local ipcon = tinker.ipcon()
 local print_enum_dev = function(dev)
       print(dev.uuid,dev.name,dev.stackid,dev.is_new)
 end
