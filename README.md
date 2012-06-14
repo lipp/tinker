@@ -100,11 +100,17 @@ handle brick/bricklet events. If you need to process other events/IO,
 use some more sophisticated event loop mechanism, like lua-ev or
 employ a threading environment.
 
-### ipcon:enumerate(timeout)
+### ipcon:enumerate(arg)
 
+Depending on the type of arg, enumerate does two different things:
+
+#### type(arg) == 'number' or type(arg) == 'nil'
+
+This is the sync/blocking enumerate variant.
 Enumerates all available devices and returns them as a table with the
 stackid as key with sub tables which contain uuid, name and
-is_new. The timeout is optional and default to 0.3 secs.
+is_new. The call waits X seconds for the bricks/bricklets to answer
+the enumeration before return, where X is 0.3 or arg (if arg is a number).
 
 ```lua
 local ipcon = tinker.ipcon()
@@ -112,7 +118,26 @@ for stackid,dev in pairs(ipcon:enumerate()) do
     print(stackid,dev.uuid,dev.name,dev.is_new)
 end
 ```
-NOTE: The uuid is NOT base 58 encoded as you see in the brickv! 
+
+#### type(arg) == 'function'
+
+This is the async/event based enumerate variant. It registers a Lua callback
+function to be called whenever devices (bricks/bricklets) "post" a 
+CALLBACK_ENUMERATE response. The Lua function
+gets passed in the device description. The return value is a function,
+which can be called to trigger enumeration. 
+The example mimics the behavior of the 'sync' variant of ipcon:enumerate().
+
+```
+local print_enum_dev = function(dev)
+      print(dev.uuid,dev.name,dev.stackid,dev.is_new)
+end
+local trigger_enum = ipcon:enumerate(print_enum_dev)
+trigger_enum()
+ipcon:loop()
+```
+
+NOTE: The uuid is NOT base 58 encoded as you see them in the brickv! 
 
 ### ipcon:lcd_20x4(stackid)
 

@@ -8,11 +8,19 @@ local print = print
 local string = string
 local select = select
 local require = require
+local type = type
+local _G = _G
 
 module('tinker')
 
 -- stackid,funcid,length
 local packet_header = 'bbH'
+-- uuid,name,stackid,is_new
+local enum_format = 'A8A40bb'
+local enum_req_funcid = 0xfe
+local enum_resp_funcid = 0xfd
+local enum_stackid = 0
+local enum_resp_length = 50 -- without header size
 
 local send_request = 
    function(sock,stackid,funcid,payload)
@@ -64,20 +72,31 @@ local ipcon =
             end
          end
 
+      local enumerate_callback
       local devs = {}
       
       local enumerate =
-         function(_,timeout)
-            brickd_call_sock:settimeout(timeout or 0.3)
-            send_request(brickd_call_sock,0,0xfe)
-            local enum_format = 'A8A40bb'
+         function(_,arg)
+            if type(arg) == 'function' then
+               enumerate_callback = arg
+               if not brickd_event_sock then
+                  brickd_event_sock = socket.connect(ip,port)
+               end
+               local trigger_enum = 
+                  function()
+                     send_request(brickd_event_sock,enum_stackid,enum_req_funcid)
+                  end
+               return trigger_enum
+            end            
+            brickd_call_sock:settimeout(arg or 0.3)
+            send_request(brickd_call_sock,enum_stackid,enum_req_funcid)
             devs = {}
             while true do
                local stackid,funcid,resp = recv_response(brickd_call_sock)
                if not stackid then
                   break
                end
-               assert(stackid==0,funcid==0xfd,#resp==50)
+               assert(stackid==enum_stackid,funcid==enum_resp_funcid,#resp==enum_resp_length)
                local _,uuid,name,stackid,is_new = resp:unpack(enum_format)
                devs[stackid] = {
                   name = name,
@@ -132,24 +151,31 @@ local ipcon =
       local dispatch_events = 
          function()
             local stackid,funcid,data = recv_response(brickd_event_sock)
-            local dev = event_devs[stackid] 
-            if not dev then
+            if stackid==enum_stackid and funcid==enum_resp_funcid then
+               assert(#data==enum_resp_length)
+               if enumerate_callback then
+                  local _,uuid,name,stackid,is_new = data:unpack(enum_format)
+                  enumerate_callback({uuid=uuid,name=name,stackid=stackid,is_new=is_new})
+               end
                return
             end
-            local callback = dev.callbacks[funcid]
-            if callback then
-               if callback.ins then
-                  if callback.format_ins then
-                     callback.f(callback.format_ins(select(2,data:unpack(callback.ins))))
+            local dev = event_devs[stackid] 
+            if dev then
+               local callback = dev.callbacks[funcid]
+               if callback then
+                  if callback.ins then
+                     if callback.format_ins then
+                        callback.f(callback.format_ins(select(2,data:unpack(callback.ins))))
+                     else
+                        callback.f(select(2,data:unpack(callback.ins)))
+                     end
                   else
-                     callback.f(select(2,data:unpack(callback.ins)))
+                     callback.f()
                   end
-               else
-                  callback.f()
                end
             end
          end
-
+      
       local device_ctor = 
          function(name)
             local ctor = 
@@ -220,7 +246,12 @@ local ipcon =
       }
    end
 
-ipcon = ipcon
+-- 'old' module export
+_G.tinker = {
+   ipcon = ipcon
+}
+
+-- recommended module export
 return {
    ipcon = ipcon
 } 
