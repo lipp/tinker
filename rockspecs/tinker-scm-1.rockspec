@@ -38,6 +38,7 @@ build = {
          ['tinker.linear_poti'] = 'tinker/linear_poti.lua',
          ['tinker.piezo_buzzer'] = 'tinker/piezo_buzzer.lua',
          ['tinker.rotart_poti'] = 'tinker/rotary_poti.lua',
+         ['tinker.servo'] = 'tinker/servo.lua',
          ['tinker.temperature'] = 'tinker/temperature.lua',
          ['tinker.temperature_ir'] = 'tinker/temperature_ir.lua',
          ['tinker.voltage'] = 'tinker/voltage.lua'

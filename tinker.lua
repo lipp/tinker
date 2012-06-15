@@ -240,6 +240,7 @@ local ipcon =
          linear_poti = device_ctor('linear_poti'),
          piezo_buzzer = device_ctor('piezo_buzzer'),
          rotary_poti = device_ctor('rotary_poti'),
+         servo = device_ctor('servo'),
          temperature = device_ctor('temperature'),
          temperature_ir = device_ctor('temperature_ir'),
          voltage = device_ctor('voltage')
