@@ -35,6 +35,63 @@ jet:state
 imu:set_orientation_period(300)
 
 
+
+-- angular_velocity
+local angular_velocity_state = jet:state
+{
+   path = 'imu/angular_velocity'
+}
+imu:angular_velocity(
+   function(x,y,z)
+      angular_velocity_state:value
+      {
+         x = x,
+         y = y,
+         z = z
+      }
+   end)
+
+-- angular_velocity period
+local default_angular_velocity_period = 300
+jet:state
+{
+   path = 'imu/angular_velocity_period',
+   set = function(val)
+      imu:set_angular_velocity_period(val)
+   end,
+   value = default_angular_velocity_period
+}
+imu:set_angular_velocity_period(300)
+
+
+-- acceleration
+local acceleration_state = jet:state
+{
+   path = 'imu/acceleration'
+}
+imu:acceleration(
+   function(x,y,z)
+      acceleration_state:value
+      {
+         x = x,
+         y = y,
+         z = z
+      }
+   end)
+
+-- acceleration period
+local default_acceleration_period = 300
+jet:state
+{
+   path = 'imu/acceleration_period',
+   set = function(val)
+      imu:set_acceleration_period(val)
+   end,
+   value = default_acceleration_period
+}
+imu:set_acceleration_period(300)
+
+
 -- io/event stuff
 local sock = ipcon:event_socket()
 
